@@ -63,6 +63,14 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   source_arn    = aws_cloudwatch_event_rule.every_day.arn
 }
 
+resource "aws_lambda_permission" "allow_apigateway" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.backtest_historical_data_function.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.fetch_historical_data_api.execution_arn}/*/*/*"
+}
+
 resource "aws_lambda_layer_version" "backtest_lambda_deps_layer" {
   layer_name          = "shared_deps"
   filename            = data.archive_file.backtest_deps_layer_code_zip.output_path

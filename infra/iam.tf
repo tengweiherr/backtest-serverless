@@ -11,7 +11,9 @@ resource "aws_iam_role" "backtest_iam" {
         Effect = "Allow"
         Sid    = ""
         Principal = {
-          Service = "lambda.amazonaws.com"
+          Service = [
+            "lambda.amazonaws.com",
+          ]
         }
       }
     ]
