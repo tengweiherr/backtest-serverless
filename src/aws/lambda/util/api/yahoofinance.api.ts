@@ -80,10 +80,7 @@ const fetchHistoricData = async ({
   symbol,
   interval,
   range,
-}: FetchHistoricDataParams): AxiosRes<{
-  quote: StockDataIndicatorsQuote;
-  timestamp: number[];
-}> => {
+}: FetchHistoricDataParams): AxiosRes<string> => {
   if (!symbol || !interval || !range) return new Error("Missing params");
 
   const url = `https://yahoo-finance127.p.rapidapi.com/historic/${symbol}/${interval}/${range}`;
@@ -99,10 +96,11 @@ const fetchHistoricData = async ({
     const redisKey = "historicalData-" + symbol + "-" + interval + "-" + range;
 
     const value = await client.get(redisKey);
+
     if (value) {
       return {
         statusCode: 200,
-        body: JSON.parse(value),
+        body: value,
       };
     }
 
@@ -119,7 +117,7 @@ const fetchHistoricData = async ({
 
     return {
       statusCode: 200,
-      body,
+      body: JSON.stringify(body),
     };
   } catch (err) {
     console.log(err);
@@ -131,9 +129,11 @@ const cronFetchHistoricData = async ({
   symbols,
   interval,
   range,
-}: CronFetchHistoricDataParams): AxiosRes<undefined> => {
+}: CronFetchHistoricDataParams): AxiosRes<string> => {
   try {
     const client = await initRedisClient();
+
+    let body;
 
     for (let i = 0; i < symbols.length; i++) {
       const symbol = symbols[i];
@@ -151,7 +151,7 @@ const cronFetchHistoricData = async ({
         headers,
       });
 
-      const body = {
+      body = {
         quote: data.indicators.quote[0],
         timestamp: data.timestamp,
       };
@@ -161,7 +161,7 @@ const cronFetchHistoricData = async ({
 
     return {
       statusCode: 200,
-      body: undefined,
+      body: JSON.stringify(body),
     };
   } catch (err) {
     console.log(err);

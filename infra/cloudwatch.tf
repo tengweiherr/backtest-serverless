@@ -9,6 +9,6 @@ resource "aws_cloudwatch_log_group" "lambda_historical_data" {
 }
 
 resource "aws_cloudwatch_log_group" "fetch_historical_data_api" {
-  name = "/aws/apigateway/${aws_api_gateway_rest_api.fetch_historical_data_api.name}"
+  name = "/aws/apigateway/${aws_api_gateway_rest_api.stock_historic.name}"
   retention_in_days = 30
 }

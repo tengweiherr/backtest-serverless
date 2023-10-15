@@ -12,21 +12,22 @@ import {
 
 const stockRoutes = express.Router();
 
-// http://localhost:3000/stock/historic
-// {
-//   "symbol": "1155.KL",
-//   "interval": "1d",
-//   "range": "1m"
-// }
+/**
+ * @route POST /stock/historic
+ * @localhost http://localhost:3000/stock/historic
+ * @body { "symbol": "1155.KL", "interval": "1d", "range": "1mo" }
+ */
 stockRoutes.post("/historic", async (req, res) => {
-  const isClient = req.query.client;
-  const result = isClient
-    ? await fetchHistoricData(req.body)
-    : await cronFetchHistoricData({
-        symbols: ["1155.KL", "7100.KL"],
-        interval: "1d",
-        range: "1m",
-      });
+  const result = await fetchHistoricData(req.body);
+  return res.send(result);
+});
+
+stockRoutes.get("/historic", async (req, res) => {
+  const result = await cronFetchHistoricData({
+    symbols: ["1155.KL", "7100.KL"],
+    interval: "1d",
+    range: "1m",
+  });
   return res.send(result);
 });
 

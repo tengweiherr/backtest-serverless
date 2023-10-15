@@ -68,7 +68,7 @@ resource "aws_lambda_permission" "allow_apigateway" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.backtest_historical_data_function.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.fetch_historical_data_api.execution_arn}/*/*/*"
+  source_arn    = "${aws_api_gateway_rest_api.stock_historic.execution_arn}/*/*/*"
 }
 
 resource "aws_lambda_layer_version" "backtest_lambda_deps_layer" {
